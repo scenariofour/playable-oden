@@ -1,0 +1,20 @@
+# build output
+dist/
+
+# dependencies (the project has none; optional tools such as playwright-core may be installed locally)
+node_modules/
+
+# local test output, recordings and captures
+test-results/
+captures/
+*.mp4
+*.mov
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+.env
+.env.*

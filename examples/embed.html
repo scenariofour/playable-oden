@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playable Oden · embedding the station</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #1f2a2e; font: 14px/1.4 system-ui, sans-serif; color: #f3ece4; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  #bar { position: fixed; left: 12px; right: 12px; bottom: 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 10px 12px; border-radius: 10px; background: rgba(20, 24, 28, 0.82); }
+  #bar span { margin-right: auto; }
+  button { font: inherit; padding: 6px 12px; border: 0; border-radius: 6px; background: #f3ece4; color: #1f2a2e; cursor: pointer; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="c" aria-label="An oden warmer. Tap a piece to put it in your bowl."></canvas>
+<div id="bar"><span id="status">Tap any oden to add it to the bowl.</span><button id="undo" type="button">Undo</button><button id="empty" type="button">Empty bowl</button></div>
+<script type="module">
+// The smallest host for the station: no shop, no cart, no prices. It owns the renderer, the camera, the lights and
+// the loop; the station brings the warmer (in its own countertop housing), the food, the tongs and the bowl.
+// This is the same shape of integration a larger 3D world uses: place the group, hand it a camera, feed it time and picks.
+import * as THREE from 'three';
+import { createStation, createEnvironment } from '../src/station/station.js';
+
+const canvas = document.getElementById('c'), status = document.getElementById('status');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.NeutralToneMapping;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1f2a2e);
+scene.environment = createEnvironment(renderer); // the station's painted room for reflections (a host may paint its own)
+scene.add(new THREE.HemisphereLight(0xfff1e0, 0x3a3030, 1.2));
+const sun = new THREE.DirectionalLight(0xffe6c8, 1.6); sun.position.set(0.3, 1, 0.6); scene.add(sun);
+const camera = new THREE.PerspectiveCamera(32, 1, 0.02, 20);
+
+const station = createStation({
+  prices: false, // cards show name and stock only
+  hooks: {
+    change: (m) => { status.textContent = m.count ? `${m.count} in the bowl: ${m.lines.filter((l) => l.qty).map((l) => `${l.qty} ${station.FOODS[l.key].en}`).join(', ')}` : 'Tap any oden to add it to the bowl.'; },
+    toast: (t) => { status.textContent = t; },
+  },
+});
+// a countertop warmer (housing) with the bowl beside it, three columns wide
+station.layout({ cols: 3, caseZ: -0.02, bowl: [0.31, 0.06], holder: 'case', housing: { h: 0.1, deck: 0.028 } });
+scene.add(station.root);
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h;
+  // frame what you touch: the warmer's housing, the bowl and the tongs' crock
+  const box = new THREE.Box3().setFromObject(station.housing).union(new THREE.Box3().setFromObject(station.bowl.group)).union(new THREE.Box3().setFromObject(station.holder));
+  const c = box.getCenter(new THREE.Vector3()), d = (w / h < 1 ? 2.6 : 1.45) * box.getSize(new THREE.Vector3()).length();
+  camera.position.set(c.x, c.y + d * 0.85, c.z + d * 0.55); camera.lookAt(c); camera.updateProjectionMatrix();
+  station.setCamera(camera, h * renderer.getPixelRatio());
+}
+addEventListener('resize', resize); station.tick(1 / 60); resize();
+
+// picks arrive as world rays; act() runs what the pick means (take a piece, put one back, or press a card)
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+canvas.addEventListener('pointerup', (e) => {
+  ndc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const t = station.pick(ray.ray); if (t) station.act(t);
+});
+document.getElementById('undo').onclick = () => station.undo();
+document.getElementById('empty').onclick = () => station.emptyBowl();
+
+let last = performance.now();
+renderer.setAnimationLoop((now) => { station.tick(Math.min(1 / 30, (now - last) / 1000)); last = now; renderer.render(scene, camera); });
+window.__station = station;
+</script>
+</body>
+</html>

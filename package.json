@@ -1,0 +1,16 @@
+{
+  "name": "playable-oden",
+  "version": "0.1.0",
+  "description": "A playable 3D oden warmer you shop from: pick ingredients, build bowls, check out (demo).",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs dist",
+    "test": "node --test test/checkout.test.mjs test/structure.test.mjs",
+    "sync-station": "node scripts/sync-station.mjs"
+  }
+}
