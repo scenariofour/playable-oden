@@ -7,6 +7,7 @@
 //   node test/e2e/shop-flow.mjs desktop            (or: portrait)
 //
 // BASE_URL defaults to http://127.0.0.1:8080/. Screenshots go to test-results/ (git-ignored).
+// DIRECT=1 lets the browser load everything itself (for example when testing the deployed site).
 // The browser's CDN requests are fetched by Node and handed to the page, so the run doesn't depend on the headless
 // browser having its own network access.
 const { chromium } = await import('playwright-core').catch(() => import('playwright')).catch(() => {
@@ -29,7 +30,7 @@ const ctx = await browser.newContext(DEV[dev]);
 const errs = [];
 const open = async (q = '') => {
   const page = await ctx.newPage();
-  await page.route(/^https:\/\//, async (r) => {
+  if (!process.env.DIRECT) await page.route(/^https:\/\//, async (r) => {
     const url = r.request().url();
     try {
       const res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (Macintosh) AppleWebKit/537.36 Chrome/130 Safari/537.36' } });

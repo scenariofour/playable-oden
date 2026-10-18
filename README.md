@@ -5,7 +5,7 @@ bowls, and turn them into a shopping cart, all in the browser.
 
 ![Tongs carrying a piece of daikon from the oden warmer to the bowl, with the order slip updating beside it](docs/media/hero.jpg)
 
-> **Live demo:** coming soon.
+> **[▶ Play the live demo](https://scenariofour.github.io/playable-oden/)** · works on desktop and phones · [`?merchant=chilled`](https://scenariofour.github.io/playable-oden/?merchant=chilled) adds shipping
 >
 > **The checkout is a simulation.** No real orders, payments, delivery services or merchant APIs are connected.
 > Prices, stores and delivery areas are made up, and nothing you enter is sent anywhere.
@@ -103,8 +103,9 @@ undo, several bowls, edit and remove, and pickup, delivery and shipping checkout
 
 The site is static. Deploy the repository root (or the output of `npm run build`) to any static host.
 
-- **GitHub Pages**: publish from the default branch, root folder. No build is needed because `index.html` sits at the root
-  and uses relative paths.
+- **GitHub Pages** (how the [live demo](https://scenariofour.github.io/playable-oden/) is hosted): Settings → Pages →
+  Deploy from a branch → `main` / root. No build is needed because `index.html` sits at the root and every path is
+  relative, so it works under a project subpath such as `/playable-oden/`. The empty `.nojekyll` file skips Jekyll processing.
 - **Netlify, Vercel, Cloudflare Pages and similar**: no framework preset, build command `npm run build`, output
   directory `dist`. Or skip the build and deploy the root.
 
