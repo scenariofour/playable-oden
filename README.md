@@ -1,5 +1,7 @@
 # Playable Oden
 
+**English** | [简体中文](README.zh-CN.md)
+
 **A 3D oden warmer you shop from.** Pick ingredients out of a simmering warmer with a pair of tongs, build your own
 bowls, and turn them into a shopping cart, all in the browser.
 
