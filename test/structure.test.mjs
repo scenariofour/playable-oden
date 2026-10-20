@@ -38,3 +38,13 @@ test('every menu item has a name, a price, a unit, stock and a receipt icon', ()
     assert.ok(new RegExp(`\\n  ${k}: '<`).test(ui), `ICONS.${k} exists in ui.js`);
   }
 });
+
+test('the station calls every hook it documents, and the docs list them', () => {
+  const src = readFileSync('src/station/station.js', 'utf8'), docs = readFileSync('docs/EMBEDDING.md', 'utf8');
+  const defaults = [...src.match(/const H = \{(.*)\.\.\.hooks \};/)[1].matchAll(/(\w+)\(\) \{\}/g)].map((m) => m[1]);
+  for (const h of ['change', 'picked', 'lifted', 'landed', 'restocking', 'toast', 'say', 'locked']) {
+    assert.ok(defaults.includes(h), `H.${h} has a default`);
+    assert.ok(new RegExp(`H\\.${h}\\(`).test(src), `H.${h} is called`);
+    assert.ok(new RegExp(`\\n    ${h}: \\(`).test(docs), `${h} is in docs/EMBEDDING.md`);
+  }
+});

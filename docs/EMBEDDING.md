@@ -21,7 +21,10 @@ const station = createStation({
   prices: false,                      // in-world cards show name and stock only (true adds the demo price)
   hooks: {                            // all optional
     change: (model) => {},            // bowl or warmer changed: { lines: [{ key, qty, adding, leaving, avail }], count, pending, full, canUndo, menu }
+    picked: (piece, toBowl, pos) => {}, // the tongs close on a piece (a good moment for a click or a haptic tap)
+    lifted: (piece, toBowl, pos) => {}, // the piece comes up out of the broth
     landed: (piece, toBowl, pos) => {}, // a piece was set down in the bowl, or put back in the warmer
+    restocking: (key, pos) => {},     // the staff's tray tips over a compartment to refill it
     toast: (text) => {},              // short notice: bowl full, sold out, restocking
     say: (text) => {},                // text for a screen-reader live region
     locked: () => {},                 // a pick arrived while the station is locked

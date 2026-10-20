@@ -47,13 +47,16 @@ const SLOTS = [[-0.03, -0.024, 0.3], [0.031, -0.022, -0.4], [-0.04, 0.02, 0.9], 
 
 // hooks (all optional):
 //   change(model)          the bowl or the case changed (model() below)
+//   picked(piece, toBowl, pos)   the tongs close on a piece (pos: station space) — for a click, or a haptic tap
+//   lifted(piece, toBowl, pos)   the piece comes up out of the broth (a drip)
 //   landed(piece, toBowl, pos)   a piece was set down in the bowl / put back in the pot (pos: station space)
+//   restocking(key, pos)   the staff's tray tips over a compartment to refill it
 //   toast(text)            a short notice (bowl full, sold out, restocking)
 //   say(text)              something for a screen reader
 //   locked()               a pick arrived while the host has locked the station (lock(true))
 // prices: false draws the in-world cards with name and stock only (RIRRI'S); true adds the demo price (the shop).
 export function createStation({ prices = true, hooks = {} } = {}) {
-  const H = { change() {}, landed() {}, toast() {}, say() {}, locked() {}, ...hooks };
+  const H = { change() {}, picked() {}, lifted() {}, landed() {}, restocking() {}, toast() {}, say() {}, locked() {}, ...hooks };
   const root = new THREE.Group(); root.name = 'odenStation';
   const uToS = { value: new THREE.Matrix4() }, uFromS = { value: new THREE.Matrix4() }; // world → station, station → world
   const uTime = { value: 0 };
@@ -203,6 +206,7 @@ export function createStation({ prices = true, hooks = {} } = {}) {
     yield* tween(0.1, (u) => HAND.pos.lerpVectors(pre, gripPos, ease.outQuad(u)));
     yield* tween(0.07, (u) => { HAND.gap = lerp(open, p.def.halfW + 0.0005, ease.inQuad(u)); });
     HAND.held = p; HAND.swing.set(0);
+    H.picked(p, toBowl, gripPos.clone());
     yield* tween(0.08, (u) => { const e = ease.outCubic(u); p.u.uPinch.value = e; HAND.gap = lerp(p.def.halfW + 0.0005, shut, e); });
 
     // lift: through the broth, a short pull while the surface clings, then up and clear of the rim
@@ -213,6 +217,7 @@ export function createStation({ prices = true, hooks = {} } = {}) {
     neckState.armed = p.def.neckR > 0 && y0 < y1 + 0.0005; neckState.c = src; neckState.p = p;
     if (y1 > y0 + 0.0005) yield* tween(Math.max(0.08, (y1 - y0) / 0.09), (u) => { HAND.pos.y = lerp(y0, y1, ease.inOutSine(u)); });
     if (neckState.armed) { const ya = HAND.pos.y; yield* tween(quick ? 0.14 : 0.22, (u) => { HAND.pos.y = lerp(ya, y2, ease.inQuad(u)); }); }
+    H.lifted(p, toBowl, HAND.pos.clone()); // clear of the surface
     { const p0 = HAND.pos.clone(); yield* tween(0.3, (u) => { const e = ease.outCubic(u); HAND.pos.set(p0.x + toward.x * 0.012 * e, lerp(p0.y, y3, e), p0.z + toward.z * 0.012 * e); }); }
     drips.hang(lowestRim, { delay: 0.02, grow: 0.18, r: 0.0024 });
     if (!quick) drips.hang(lowestRim, { delay: 0.12, grow: 0.18, r: 0.002 });
@@ -453,6 +458,7 @@ export function createStation({ prices = true, hooks = {} } = {}) {
     };
     tray.group.visible = true;
     yield* tween(0.6, (u) => { const e = ease.outCubic(u); tray.group.position.lerpVectors(start, above, e); tray.group.rotation.set(0.3 * (1 - e), 0, 0); onTray(); });
+    H.restocking(k, over.clone());
     yield* tween(0.2, (u) => { tray.group.rotation.x = -0.38 * ease.inOutSine(u); onTray(); });
     const t0 = uTime.value, legs = fresh.map((p, j) => {
       const from = p.mesh.position.clone(), to = homePose(k, p.home); p.flying = true;
