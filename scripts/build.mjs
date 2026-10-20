@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 
 export const ENTRY = 'src/shop/main.js';
 export const STATION_ENTRY = 'src/station/station.js';
-const STATIC = ['index.html', 'favicon.svg'];
+const STATIC = ['index.html', 'favicon.svg', 'social.jpg'];
 
 // every local module reachable from `entry` through relative imports
 export function moduleGraph(entry) {

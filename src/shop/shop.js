@@ -144,7 +144,8 @@ export function createShop({ merchant, onRemove, onEdit, onPlace }) {
   function showErrors() {
     errors = tried ? validateCheckout(cart, sel, merchant) : {};
     form.querySelectorAll('[data-err]').forEach((p) => { const k = p.dataset.err; p.textContent = k === 'form' ? (Object.keys(errors).length ? 'Please check the highlighted fields.' : '') : errors[k] || ''; });
-    form.querySelectorAll('input[name], select[name]').forEach((i) => i.toggleAttribute('aria-invalid', !!errors[i.name]));
+    // (an empty aria-invalid means false to assistive tech, so set it to "true" or drop it)
+    form.querySelectorAll('input[name], select[name]').forEach((i) => { if (errors[i.name]) i.setAttribute('aria-invalid', 'true'); else i.removeAttribute('aria-invalid'); });
     const h = form.querySelector('[data-hint="postal"]'); if (h) h.innerHTML = postalHint();
   }
 
