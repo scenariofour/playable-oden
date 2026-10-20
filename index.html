@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Playable Oden</title>
 <meta name="description" content="A playable 3D oden warmer you shop from: pick ingredients with the tongs, build your own bowls, and check out (demo only).">
+<meta name="author" content="Iris">
 <meta name="theme-color" content="#231d24">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,6 +59,7 @@
   .empty { margin: 14px 18px 16px; color: var(--toy-mute); line-height: 1.45; }
   .empty b { color: var(--toy-ink); }
   .slip-foot { padding: 11px 16px 14px; border-top: 1.5px dashed var(--rule); }
+  .credit { margin: 9px 0 0; } .credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
   .total { display: flex; justify-content: space-between; align-items: baseline; }
   .total span { color: var(--toy-mute); font-weight: 700; font-size: 12px; }
   .total b { font: 900 23px/1 var(--ui-font); font-variant-numeric: tabular-nums; }
@@ -239,12 +241,12 @@
     .menu::-webkit-scrollbar { display: none; }
     .chev { display: block; }
     #slip.open .chev { rotate: 180deg; }
-    #slip:not(.open) #lines, #slip:not(.open) .empty, #slip:not(.open) .row2 { display: none; }
+    #slip:not(.open) #lines, #slip:not(.open) .empty, #slip:not(.open) .row2, #slip:not(.open) .credit { display: none; }
     .slip-foot { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 9px 12px 11px; }
     .total { flex-direction: column; align-items: flex-start; gap: 3px; }
     #done { margin-top: 0; padding: 11px 10px 10px; }
     #slip.open .slip-foot { grid-template-columns: auto 1fr; }
-    #slip.open .row2 { grid-column: 1 / -1; }
+    #slip.open .row2, #slip.open .credit { grid-column: 1 / -1; }
     #slip.open .row2 { display: flex; margin-top: 0; }
   }
   body.framed #slip { left: 10px; right: 10px; top: auto; bottom: 10px; width: auto; }
@@ -294,6 +296,7 @@
         <button class="linkbtn" id="undo" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5 2.5 6.5l3 3"/><path d="M2.8 6.5h6.7a4 4 0 0 1 0 8H7"/></svg>Undo last</button>
         <span class="fine">DEMO PRICES · NOT A REAL ORDER</span>
       </div>
+      <p class="credit fine">Made by <a href="https://iris-li-homepage.vercel.app/">Iris</a> · <a href="https://github.com/scenariofour/playable-oden">Source on GitHub</a></p>
     </div>
   </aside>
 </div>

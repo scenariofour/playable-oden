@@ -179,3 +179,5 @@ docs/                 架构说明、嵌入指南、README 图片
 项目没有打包任何第三方素材，所有模型、贴图和图标都由代码生成。运行时会加载 [three.js](https://threejs.org)（MIT）和 Yoshimichi Ohira 设计的 [Zen Maru Gothic](https://fonts.google.com/specimen/Zen+Maru+Gothic) 字体（SIL Open Font License 1.1）。详情和声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 灵感来自日本便利店收银台旁的关东煮锅。
+
+作者：[Iris](https://iris-li-homepage.vercel.app/)。更多作品见同样做成 3D 便利店的作品集 [RIRRI'S](https://rirris-world.vercel.app/)。

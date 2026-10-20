@@ -237,3 +237,6 @@ typeface by Yoshimichi Ohira (SIL Open Font License 1.1). Details and notices ar
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Inspired by the oden warmers by the register in Japanese convenience stores.
+
+Made by [Iris](https://iris-li-homepage.vercel.app/). The rest of Iris's work is shelved in
+[RIRRI'S](https://rirris-world.vercel.app/), a 3D convenience store portfolio.
