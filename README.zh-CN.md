@@ -180,4 +180,4 @@ docs/                 架构说明、嵌入指南、README 图片
 
 灵感来自日本便利店收银台旁的关东煮锅。
 
-作者：[Iris](https://iris-li-homepage.vercel.app/)。更多作品见同样做成 3D 便利店的作品集 [RIRRI'S](https://rirris-world.vercel.app/)。
+作者：[Iris](https://irisli.dev/)。更多作品见同样做成 3D 便利店的作品集 [RIRRI'S](https://world.irisli.dev/)。
